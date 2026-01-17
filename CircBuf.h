@@ -9,12 +9,24 @@ using std::string;
 class CircBuf {
   const size_t CHUNK{8};
   // Insert your private stuff here
+private:
   int write_index = 0, read_index = 0;
-  char *internal_array[];
+  char *internal_array = nullptr;
+  size_t capacity_ = 0;
+
+  void grow();
 
 public:
-  CircBuf(size_t reserve = 0); // Number of elements you want it to be able to
-                               // hold to start with.
+  // constuctor sets capasity according to reserve size
+  CircBuf(size_t reserve = 0) {
+    if (reserve == 0) {
+      capacity_ = 0;
+    } else {
+      // round capacity up to nearest multiple of chunk
+      capacity_ = ((reserve + CHUNK - 1) / CHUNK) * CHUNK;
+    }
+  }; // Number of elements you want it to be able to
+     // hold to start with.
   ~CircBuf();
   size_t size();
   size_t capacity();
