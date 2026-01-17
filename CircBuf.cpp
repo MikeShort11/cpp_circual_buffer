@@ -37,6 +37,31 @@ void CircBuf::grow() {
   }
 }
 
-void CircBuf::insert(char) {
+void CircBuf::insert(char c) {
   // allocate space if needed
+  if (size() >= capacity_) {
+    grow();
+  }
+  internal_array[write_index] = c;
+  write_index = (write_index + 1) % capacity_;
+}
+
+void CircBuf::insert(const char *c, size_t sz) {
+  while (size() + sz >= capacity_) {
+    grow();
+  }
+  for (int i = 0; i < sz; i++) {
+    internal_array[(write_index + i) % capacity_] = c[i];
+  }
+  write_index = (write_index + sz) % capacity_;
+}
+
+void CircBuf::insert(const string &s) {
+  while (size() + s.length() >= capacity_) {
+    grow();
+  }
+  for (int i; i < s.length(); i++) {
+    internal_array[(write_index + i) % capacity_] = s[i];
+  }
+  write_index = (write_index + s.length()) % capacity_;
 }
