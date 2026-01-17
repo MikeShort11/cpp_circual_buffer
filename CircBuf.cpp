@@ -1,6 +1,8 @@
 #include "CircBuf.h"
 #include <cstddef>
 
+size_t CircBuf::capacity() { return capacity_; }
+
 size_t CircBuf::size() {
   if (capacity_ == 0)
     return 0;
@@ -35,6 +37,27 @@ void CircBuf::grow() {
     internal_array = temp;
     // I think temp (the pointer, not the array) will go away once out of scope?
   }
+}
+
+void CircBuf::shrink() {
+  // check that there is enough space to remove some
+  if (capacity_ - CHUNK <= size()) {
+    return;
+  }
+
+  size_t local_size = size(); // local copy needed to reassign write index
+  capacity_ -= CHUNK;
+  char *temp = new char[capacity_];
+
+  for (int i = 0; i < local_size; i++) {
+    temp[i] = get();
+  }
+
+  write_index = local_size;
+  read_index = 0;
+  delete[] internal_array;
+  internal_array = temp;
+  // I think temp (the pointer, not the array) will go away once out of scope?
 }
 
 void CircBuf::insert(char c) {
