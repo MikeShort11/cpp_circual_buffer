@@ -27,7 +27,9 @@ public:
     }
   }; // Number of elements you want it to be able to
      // hold to start with.
-  ~CircBuf();
+  ~CircBuf(){
+    delete[] internal_array;
+  };
   size_t size();
   size_t capacity();
 

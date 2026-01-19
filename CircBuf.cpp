@@ -79,6 +79,49 @@ void CircBuf::insert(const char *c, size_t sz) {
   write_index = (write_index + sz) % capacity_;
 }
 
+char CircBuf::get() {
+  char c = internal_array[read_index];
+  read_index = (read_index + 1) % capacity_;
+  return c;
+}
+
+string CircBuf::get(size_t sz) {
+  string s;
+  for (int i = 0; i < sz; i++) {
+    s += internal_array[read_index];
+    read_index = (read_index + 1) % capacity_;
+  }
+  return s;
+}
+
+string CircBuf::examine() {
+  string s;
+  size_t temp_read_index = 0;
+  for (int i = 0; i < capacity_; i++) {
+    if (i < write_index && i >= read_index) {
+      s += internal_array[i];
+    } else {
+      s += '-';
+    }
+  }
+  return s;
+}
+
+string CircBuf::flush() {
+  string s;
+  size_t local_size = size();
+  for (int i = 0; i < local_size; i++) {
+    s += get();
+  }
+  // reset buffer
+  delete[] internal_array;
+  internal_array = nullptr;
+  capacity_ = 0;
+  write_index = 0;
+  read_index = 0;
+  return s;
+}
+
 void CircBuf::insert(const string &s) {
   while (size() + s.length() >= capacity_) {
     grow();
