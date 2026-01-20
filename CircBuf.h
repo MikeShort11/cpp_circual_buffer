@@ -13,6 +13,7 @@ private:
   int write_index = 0, read_index = 0;
   char *internal_array = nullptr;
   size_t capacity_ = 0;
+  size_t size_ = 0;
 
   void grow();
 
