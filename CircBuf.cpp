@@ -105,16 +105,29 @@ string CircBuf::get(size_t sz) {
 }
 
 string CircBuf::examine() { //TODO: reimplement function to properly iterate
-  string s;
+  string s = "[";
   size_t temp_read_index = 0;
-  for (int i = 0; i < capacity_; i++) {
-    size_t logical = (i - read_index + capacity_) % capacity_;
-    if (logical < capacity_) {
-      s += internal_array[logical];
-    } else {
-      s += '-';
+  if (read_index <= write_index) {
+    for (int i=0; i < capacity_; i++) {
+      if (i >= read_index && i < write_index) {
+        s += internal_array[i];
+      } else {
+        s += '-';
+      }
     }
   }
+  else if (write_index > read_index)
+  {
+    for (int i=0; i < capacity_; i++) {
+      if (i >= read_index && i < write_index) {
+        s += '-';
+      }
+      else {
+        s += internal_array[i];
+      }
+    }
+  }
+  s += ']';
   return s;
 }
 
