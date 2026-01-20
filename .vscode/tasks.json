@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Build circbuf",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-O0",
+        "-fno-omit-frame-pointer",
+        "CircBuf.cpp",
+        "main.cpp",
+        "-o",
+        "${workspaceFolder}/circbuf"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gcc"],
+      "group": { "kind": "build", "isDefault": true }
+    }
+  ]
+}

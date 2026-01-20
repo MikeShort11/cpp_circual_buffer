@@ -39,7 +39,7 @@ void CircBuf::grow() {
   }
 }
 
-void CircBuf::shrink() {
+void CircBuf::shrink() { // todo: make sure capacity is updated correctly
   // check that there is enough space to remove some
   if (capacity_ - CHUNK <= size()) {
     return;
@@ -79,6 +79,16 @@ void CircBuf::insert(const char *c, size_t sz) {
   write_index = (write_index + sz) % capacity_;
 }
 
+void CircBuf::insert(const string &s) {
+  while (size() + s.length() >= capacity_) {
+    grow();
+  }
+  for (int i=0; i < s.length(); i++) {
+    internal_array[(write_index + i) % capacity_] = s[i];
+  }
+  write_index = (write_index + s.length()) % capacity_;
+}
+
 char CircBuf::get() {
   char c = internal_array[read_index];
   read_index = (read_index + 1) % capacity_;
@@ -94,12 +104,13 @@ string CircBuf::get(size_t sz) {
   return s;
 }
 
-string CircBuf::examine() {
+string CircBuf::examine() { //TODO: reimplement function to properly iterate
   string s;
   size_t temp_read_index = 0;
   for (int i = 0; i < capacity_; i++) {
-    if (i < write_index && i >= read_index) {
-      s += internal_array[i];
+    size_t logical = (i - read_index + capacity_) % capacity_;
+    if (logical < capacity_) {
+      s += internal_array[logical];
     } else {
       s += '-';
     }
@@ -122,12 +133,3 @@ string CircBuf::flush() {
   return s;
 }
 
-void CircBuf::insert(const string &s) {
-  while (size() + s.length() >= capacity_) {
-    grow();
-  }
-  for (int i; i < s.length(); i++) {
-    internal_array[(write_index + i) % capacity_] = s[i];
-  }
-  write_index = (write_index + s.length()) % capacity_;
-}

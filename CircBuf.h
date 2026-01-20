@@ -24,6 +24,7 @@ public:
     } else {
       // round capacity up to nearest multiple of chunk
       capacity_ = ((reserve + CHUNK - 1) / CHUNK) * CHUNK;
+      internal_array = new char[capacity_];
     }
   }; // Number of elements you want it to be able to
      // hold to start with.
